@@ -5,7 +5,7 @@ description: Turn an official LEGO set number into a beat-synced video of the se
 
 # LEGO build video
 
-Input: a LEGO set number (on the box, like `42115` or `10179`) and optionally a music track.
+Input: a LEGO set, by number (on the box, like `42115` or `10179`) or by name ("the Millennium Falcon", "千年隼"), and optionally a music track.
 Output: `build.mp4`, 30 fps. Parts fall into place batch by batch in manual order, synced to the beat; then the finished model turns slowly. Optionally, step 6 makes its mechanisms move.
 
 The model comes from the **LDraw Official Model Repository** (OMR, library.ldraw.org/omr, about 1,470 sets). An LDraw file is plain text: one line per part (colour, position, rotation, part number), with `0 STEP` lines marking the manual's steps. That is why the build order is the real one.
@@ -23,11 +23,19 @@ About 3 minutes plus the Blender download. Already have Blender? Run `BLENDER=/p
 
 ## 2. Get the set
 
+If the user names a set instead of giving its number, search by its official English name (translate it if needed) and confirm the match with the user when there is more than one:
+
+```bash
+python3 scripts/fetch_set.py "millennium falcon"   # prints: 10179-1  Millennium Falcon  Star Wars > Ultimate Collector Series  2007, and the mini 4488-1
+```
+
+Then download by number:
+
 ```bash
 python3 scripts/fetch_set.py 10179          # or 10179-1; about a minute
 ```
 
-It finds the set in the LDraw Official Model Repository and downloads every model file of it (`10179-1.mpd` first = the main build), printing the author, licence and notes. If the set is not there, it says so; tell the user and do not substitute an unofficial file without saying so. Author, licence and any notes about missing parts or substitutes go in the video description.
+By number, it finds the set in the LDraw Official Model Repository and downloads every model file of it (`10179-1.mpd` first = the main build), printing the author, licence and notes. If the set is not there, it says so; tell the user and do not substitute an unofficial file without saying so. Author, licence and any notes about missing parts or substitutes go in the video description.
 
 ## 3. Convert and order
 

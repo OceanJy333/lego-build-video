@@ -1,8 +1,8 @@
 # LEGO 拼装视频 Skill
 
-给 AI 一个乐高套装编号，它从 LDraw 官网下载这套乐高的文字图纸，按官方说明书的顺序在电脑里一步步拼出来，卡着音乐节拍渲染成视频；还能把模型交给 [ldraw-mecha](https://github.com/anteloc/ldraw-mecha)，让本来能动的零件动起来。
+跟 AI 说想看哪一套乐高，它自己查到编号、从 LDraw 官网下载这套乐高的文字图纸，按官方说明书的顺序在电脑里一步步拼出来，卡着音乐节拍渲染成视频；还能把模型交给 [ldraw-mecha](https://github.com/anteloc/ldraw-mecha)，让本来能动的零件动起来。
 
-*Give an AI agent a LEGO set number. It downloads the set's LDraw model, builds it step by step in the order of the paper manual, renders a beat-synced build video in Blender, and can make the set's real mechanisms move.*
+*Tell an AI agent which LEGO set you want to see. It finds the set number, downloads the set's LDraw model, builds it step by step in the order of the paper manual, renders a beat-synced build video in Blender, and can make the set's real mechanisms move.*
 
 | 42115 兰博基尼 Sián，3,696 块 | 10179 千年隼，5,254 块 | 千年隼的雷达碟转起来 |
 |---|---|---|
@@ -17,9 +17,11 @@ git clone https://github.com/OceanJy333/lego-build-video.git
 mkdir -p ~/.claude/skills && cp -r lego-build-video/skills/lego-build-video ~/.claude/skills/
 ```
 
-然后跟它说一句：
+然后跟它许个愿：
 
-> 按说明书的顺序把 10179 拼出来，做成卡点视频
+> 我想看千年隼是怎么一步步拼出来的，做成卡点视频
+
+它会自己查到编号 10179、下载图纸、装好要用的工具，再渲染出片。
 
 用 Codex、Cursor 等其他 AI 时，把 [SKILL.md](skills/lego-build-video/SKILL.md) 交给它即可。自己手动跑，命令也全在这份文件里。
 
@@ -27,7 +29,7 @@ mkdir -p ~/.claude/skills && cp -r lego-build-video/skills/lego-build-video ~/.c
 
 ```mermaid
 flowchart LR
-  A[盒子上的编号<br/>10179] --> B[fetch_set.py<br/>从 LDraw 官网下载图纸]
+  A[想看哪一套<br/>千年隼] --> B[fetch_set.py<br/>查编号 10179、下载图纸]
   B --> C[mpd2glb<br/>图纸转 3D，保留步骤]
   C --> D[order.py<br/>按说明书顺序编组]
   D --> E[build.py<br/>Blender 卡拍点落件]
@@ -39,7 +41,7 @@ flowchart LR
 | 步 | 做什么 | 脚本 | 耗时（Apple M 系列） |
 |---|---|---|---|
 | 1 | 安装 Blender、ffmpeg、bun、mpd2glb、LDraw 零件库 | `setup.sh` | 约 3 分钟 + Blender 下载 |
-| 2 | 按编号从 LDraw 官方模型库下载图纸，打印作者与授权 | `fetch_set.py` | 约 1 分钟 |
+| 2 | 按名字查编号，从 LDraw 官方模型库下载图纸，打印作者与授权 | `fetch_set.py` | 1–2 分钟 |
 | 3 | 转 3D 并按说明书顺序编组 | `mpd2glb` + `order.py` | 15 秒到 2 分钟 |
 | 4 | 先渲 4 帧预览，再整段渲染 | `build.py` | 3,700 块约 30 分钟，5,000 块约 1 小时 |
 | 5 | 配乐，爆发点对上第 16 拍 | `encode.sh` | 几秒 |
